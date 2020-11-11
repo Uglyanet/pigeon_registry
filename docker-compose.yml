@@ -1,0 +1,24 @@
+version: "3"
+
+services:
+
+  server:
+
+    build: docker.pkg.github.com/uglyanet/pigeon_registry/pigeon_server:latest
+
+    command: node index.js
+
+    ports:
+      - 5000:5000
+
+  client:
+
+    image: docker.pkg.github.com/uglyanet/pigeon_registry/pigeon_client:latest
+ 
+    command: nginx -g 'daemon off';
+
+    ports:
+      - 3000:80
+ 
+    depends_on:
+      - server
