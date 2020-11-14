@@ -2,23 +2,22 @@ version: "3"
 
 services:
 
-  server:
+  nginx-router:
+    networks: { default: { aliases: ['pigeon.local'] } }
+    image: docker.pkg.github.com/uglyanet/pigeon_registry/pigeon_nginx:latest
+    restart: always
+    ports: ['80:80']
+    volumes: ['images-cache:/data/nginx/cache']
+    depends_on: [ 'backend', 'frontend' ]
 
-    build: docker.pkg.github.com/uglyanet/pigeon_registry/pigeon_server:latest
-
+  backend:
+    image: docker.pkg.github.com/uglyanet/pigeon_registry/pigeon_server:latest
+    restart: always
     command: node index.js
 
-    ports:
-      - 5000:5000
-
-  client:
-
+  frontend:
     image: docker.pkg.github.com/uglyanet/pigeon_registry/pigeon_client:latest
- 
+    restart: always
     command: nginx -g 'daemon off';
-
-    ports:
-      - 3000:80
- 
     depends_on:
       - server
