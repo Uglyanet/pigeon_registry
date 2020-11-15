@@ -3,7 +3,6 @@ version: "3"
 services:
 
   nginx-router:
-    networks: { default: { aliases: ['pigeon.local'] } }
     build: ./pigeon_nginx/nginx_router
     restart: always
     ports: ['80:80']
@@ -12,11 +11,13 @@ services:
   backend:
     image: docker.pkg.github.com/uglyanet/pigeon_registry/pigeon_server:latest
     restart: always
+    ports: [5000:5000]
     command: node index.js
 
   frontend:
     image: docker.pkg.github.com/uglyanet/pigeon_registry/pigeon_client:latest
     restart: always
+    ports: [3000:80]
     command: nginx -g 'daemon off';
     depends_on:
       - backend
